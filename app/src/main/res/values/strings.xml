@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Korvus</string>
+    <string name="title_todo">To-do</string>
+    <string name="title_calendar">Calendar</string>
+    <string name="title_me">Me</string>
+    <string name="todo_item_placeholder">Enter new task here</string>
+    <string name="todo_btn">Add</string>
+</resources>

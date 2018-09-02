@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_todo"
+        android:icon="@drawable/ic_todo_black_96dp"
+        android:title="@string/title_todo" />
+
+    <item
+        android:id="@+id/navigation_dashboard"
+        android:icon="@drawable/ic_calendar_black_96dp"
+        android:title="@string/title_calendar" />
+
+    <item
+        android:id="@+id/navigation_notifications"
+        android:icon="@drawable/ic_me_black_96dp"
+        android:title="@string/title_me" />
+
+</menu>

@@ -8,8 +8,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
-public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder> {
+public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder> implements ItemTouchHelperAdapter {
 
     private ArrayList<String> todoDataset;
 
@@ -32,6 +33,26 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
     @Override
     public int getItemCount() {
         return todoDataset.size();
+    }
+
+    @Override
+    public void onItemMove(int fromPosition, int toPosition) {
+        if (fromPosition < toPosition) {
+            for (int i = fromPosition; i < toPosition; i++) {
+                Collections.swap(todoDataset, i, i + 1);
+            }
+        } else {
+            for (int i = fromPosition; i > toPosition; i--) {
+                Collections.swap(todoDataset, i, i - 1);
+            }
+        }
+        notifyItemMoved(fromPosition, toPosition);
+    }
+
+    @Override
+    public void onItemDismiss(int position) {
+        todoDataset.remove(position);
+        notifyItemRemoved(position);
     }
 
     public class TodoViewHolder extends RecyclerView.ViewHolder {

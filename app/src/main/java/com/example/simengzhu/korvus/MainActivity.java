@@ -6,6 +6,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView todoRecyclerView;
-    private RecyclerView.Adapter todoAdapter;
+    private TodoAdapter todoAdapter;
     private RecyclerView.LayoutManager todoLayoutManager;
     private ArrayList<String> todoDataset;
     private EditText todoEditText;
@@ -77,6 +78,11 @@ public class MainActivity extends AppCompatActivity {
         // Specify an adapter
         todoAdapter = new TodoAdapter(todoDataset);
         todoRecyclerView.setAdapter(todoAdapter);
+
+        ItemTouchHelper.Callback callback =
+                new SimpleItemTouchHelperCallback(todoAdapter);
+        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+        touchHelper.attachToRecyclerView(todoRecyclerView);
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);

@@ -1,7 +1,10 @@
 package com.example.simengzhu.korvus;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,15 +16,16 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView todoRecyclerView;
     private TodoAdapter todoAdapter;
     private RecyclerView.LayoutManager todoLayoutManager;
-    private ArrayList<String> todoDataset;
     private EditText todoEditText;
     private Button todoButton;
+    private TodoTaskViewModel mTodoTaskViewModel;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -50,10 +54,8 @@ public class MainActivity extends AppCompatActivity {
 
         setTitle(R.string.title_todo);
 
-        todoDataset = new ArrayList<>();
-        for (int i = 0; i < 100; ++i) {
-            todoDataset.add("Welcome to #" + i);
-        }
+        // Instantiating my TodoTaskViewModel, persisted with ViewModelProviders
+        mTodoTaskViewModel = ViewModelProviders.of(this).get(TodoTaskViewModel.class);
 
         // Adding new to-do item to the list
         todoEditText = (EditText) findViewById(R.id.todo_edittext);
@@ -62,8 +64,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String newTaskText = todoEditText.getText().toString();
                 if (!newTaskText.equals("")) {
-                    todoDataset.add(newTaskText);
-                    todoAdapter.notifyItemInserted(todoDataset.size() - 1);
+                    mTodoTaskViewModel.insert(new TodoDBTask(newTaskText));
                     todoEditText.setText("");
                 }
             }
@@ -76,13 +77,22 @@ public class MainActivity extends AppCompatActivity {
         todoRecyclerView.setHasFixedSize(true);
 
         // Specify an adapter
-        todoAdapter = new TodoAdapter(todoDataset);
+        todoAdapter = new TodoAdapter(this);
         todoRecyclerView.setAdapter(todoAdapter);
 
-        ItemTouchHelper.Callback callback =
-                new SimpleItemTouchHelperCallback(todoAdapter);
-        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
-        touchHelper.attachToRecyclerView(todoRecyclerView);
+        // Changes the UI when database data changes
+        mTodoTaskViewModel.getAllTasks().observe(this, new Observer<List<TodoDBTask>>() {
+            @Override
+            public void onChanged(@Nullable final List<TodoDBTask> todoDBTasks) {
+                todoAdapter.setTodoDataset((ArrayList<TodoDBTask>) todoDBTasks);
+            }
+        });
+
+        // Attaching ItemTouchHelper to the RecyclerView
+        ItemTouchHelper.Callback todoItemTouchHelperCallback =
+                new TodoItemTouchHelperCallback(todoAdapter, mTodoTaskViewModel);
+        ItemTouchHelper todoItemTouchHelper = new ItemTouchHelper(todoItemTouchHelperCallback);
+        todoItemTouchHelper.attachToRecyclerView(todoRecyclerView);
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);

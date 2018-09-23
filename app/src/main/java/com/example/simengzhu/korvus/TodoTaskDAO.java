@@ -21,4 +21,11 @@ public interface TodoTaskDAO {
 
     @Query("SELECT * from task_table ORDER BY task ASC")
     LiveData<List<TodoDBTask>> getAllTasks();
+
+    @Query("UPDATE task_table SET position = :newOrder WHERE position = :oldOrder")
+    void updateOrder(int oldOrder, int newOrder);
+
+    @Query("SELECT count(*) FROM task_table")
+    int getNumOfRows();
+
 }

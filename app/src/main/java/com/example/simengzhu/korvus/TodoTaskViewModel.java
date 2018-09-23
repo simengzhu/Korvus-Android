@@ -21,4 +21,8 @@ public class TodoTaskViewModel extends AndroidViewModel {
     public void insert(TodoDBTask task) { mRepository.insert(task); }
 
     public void delete(TodoDBTask task) { mRepository.delete(task); }
+
+    public void updateOrder(int oldOrder, int newOrder) {mRepository.updateOrder(oldOrder, newOrder);}
+
+    public int getNumOfRows() {return mRepository.getNumOfRows();}
 }

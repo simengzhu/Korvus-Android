@@ -45,6 +45,12 @@ public class TodoItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
     @Override
     public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+        int todoItemAmount = mAdapter.getItemCount();
+        TodoDBTask first = mAdapter.getTodoDBTask(viewHolder.getAdapterPosition());
+        TodoDBTask second = mAdapter.getTodoDBTask(target.getAdapterPosition());
+        mTodoTaskViewModel.updateOrder(first.getPosition(), mTodoTaskViewModel.getNumOfRows());
+        mTodoTaskViewModel.updateOrder(first.getPosition(), second.getPosition());
+        mTodoTaskViewModel.updateOrder(second.getPosition(), first.getPosition());
         mAdapter.onItemMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
         return true;
     }
